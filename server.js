@@ -4,12 +4,14 @@ import cors from 'cors';
 import dotenv from "dotenv";
 import connectDB from './config/db.js';
 
+import ErrorHandler from './middlewares/errors.js';
 import InitialiseTaskRoutes from './routes/tasks.js';
+import InitialiseAuthRoutes from './routes/auth.js';
 
 const PORT = 3001;
 
 dotenv.config();
-connectDB();
+connectDB(3);
 
 const app = express();
 app.listen(PORT, () => {
@@ -18,8 +20,10 @@ app.listen(PORT, () => {
 app.use(json());
 app.use(cookieParser());
 app.use(cors());
+app.use(ErrorHandler);
 
 InitialiseTaskRoutes(app);
+InitialiseAuthRoutes(app);
 
 
 
