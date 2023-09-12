@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 import bcrypt from 'bcrypt';
-import ERRORS from "../constants/errors.js";
+import ERRORS from "../utils/errors.js";
 
 const UserSchema = new Schema(
     {
@@ -46,5 +46,5 @@ UserSchema.statics.login = async function (email, password) {
 };
 
 
-const UserModal = model('User', UserSchema);
-export default UserModal;
+const UserModel = model('User', UserSchema);
+export default UserModel;

@@ -1,8 +1,9 @@
 import asyncHandler from "express-async-handler"
 import validator from 'validator';
-import ERRORS from "../constants/errors.js";
+import ERRORS from "../utils/errors.js";
+import utils from "../utils/jwt.js";
 
-import UserModal from "../modals/user.js";
+import UserModel from "../modals/user.js";
 
 const handleErrors = (error) => {
     let errors = {
@@ -61,11 +62,13 @@ const SignUp = asyncHandler(async (req, res) => {
 
     // Create a new user
     try {
-        const user = await UserModal.create({
+        const user = await UserModel.create({
             name, email, password
         });
 
-        res.status(201).json(user);
+        const jwtToken = utils.generateToken(user);
+        res.cookie("token", jwtToken);
+        res.status(200).json(user);
     } catch (error) {
         const errors = handleErrors(error);
         res.status(400).json({errors});
@@ -82,7 +85,10 @@ const SignIn = asyncHandler(async (req, res) => {
     });
 
     try {
-        const user = await UserModal.login(email, password);
+        const user = await UserModel.login(email, password);
+
+        const jwtToken = utils.generateToken(user);
+        res.cookie("token", jwtToken);
         res.status(200).json({ user: user._id });
     } catch(error) {
         const errors = handleErrors(error);

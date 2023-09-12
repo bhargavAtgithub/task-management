@@ -1,31 +1,110 @@
 import asyncHandler from "express-async-handler"
+import TaskModel from "../modals/task.js";
+import validator from 'validator';
+import ERRORS from "../utils/errors.js";
 
-import isEmail from "validator/lib/isEmail.js";
+const getAllTasks = asyncHandler(async (req, res) => {
+    const {user} = req;
+    
+    try {
+        const allTasks = await TaskModel.find({
+            user: user._id
+        }).sort({ createdAt: -1 });
 
-const VALIDATION_ERRORS = {
-    INVALID_EMAIL: "Please enter a valid email",
-    INVALID_PASSWORD: "Please enter a valid password"
-}
 
-const getAllTasks = asyncHandler((req, res) => {
-    res.status(200).json({message: 'Get todos'})
+        res.status(200).json({
+            tasks: allTasks
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(400).json({ error });
+    }
 });
   
-const createTask = asyncHandler((req, res) => {
-  res.status(200).json({message: 'Set todo'})
+const createAndUpdateTask = asyncHandler(async (req, res) => {
+    const { user, body, params } = req;
+    const { task } = body;
+
+    try {
+
+        if(!task.title){
+            throw Error(ERRORS.MISSING_TASK_TITLE.message)
+        }
+
+        if(task.dueDate){
+            const isDueDateValid = validator.isAfter(task.dueDate);
+            if(!isDueDateValid) throw Error(ERRORS.INVALID_DUE_DATE.message)
+        }
+
+
+        if(params.id){
+
+            const validFields = ["title", "description", "dueDate", "user"];
+            const filteredObject = {};
+
+            Object.keys(task).forEach(key => {
+                if (validFields.includes(key)) {
+                  filteredObject[key] = task[key]; 
+                }
+              });
+
+            const updatedTask = await TaskModel.updateOne({
+                "user": user._id,
+                _id: params.id
+            }, {
+                $set: {
+                    ...filteredObject
+                }
+            })
+
+            if(updatedTask.modifiedCount == 1){
+                res.status(200).json(updatedTask);
+            } else {
+                throw Error("Error updating the task")
+            }
+
+        } else {
+            const newTask = await TaskModel.create({
+                title: task.title,
+                description: task.description || "",
+                dueDate: task.dueDate ? new Date(task.dueDate) : '',
+                user: user._id,
+            })
+        
+            res.status(200).json(newTask);
+        }
+
+    } catch (error) {
+        res.status(400).json({error: {
+            message: error.message
+        }});
+    }
 });
 
-const updateTask = asyncHandler((req, res) => {
-  res.status(200).json({message: `Update todo ${req.params.id}`})
-});
+const deleteTask = asyncHandler(async (req, res) => {
+    const { user, params } = req;
 
-const deleteTask = asyncHandler((req, res) => {
-  res.status(200).json({message: `Delete todo ${req.params.id}`})
+    try {
+        const deletedTask = await TaskModel.deleteOne({
+            "user": user._id,
+            _id: params.id
+        });
+
+        if(deletedTask.deletedCount == 1){
+            res.status(200).json(deletedTask);
+        }
+        else {
+            throw Error("Error deleting the task")
+        }
+    } catch (error) {
+        res.status(400).json({error: {
+            message: error.message
+        }});
+    } 
 });
   
 export default {
     getAllTasks,
-    createTask,
-    updateTask,
+    createAndUpdateTask,
     deleteTask
 }

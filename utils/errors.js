@@ -14,6 +14,14 @@ const ERRORS = {
     MISSING_CREDENTIALS: {
         code: "missing_credentials",
         message: "Please enter all the required credentials",
+    },
+    MISSING_TASK_TITLE: {
+        code: "missing_task_title",
+        message: "Add title to create a task",
+    },
+    INVALID_DUE_DATE: {
+        code: 'invalid_due_date',
+        message: "Due date has to be greater than current date"
     }
 }
 
