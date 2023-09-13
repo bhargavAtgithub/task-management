@@ -95,7 +95,7 @@ const SignIn = asyncHandler(async (req, res) => {
         const jwtToken = utils.generateToken(user);
         const expirydate = new Date();
         expirydate.setDate(expirydate.getDate() + 2);
-        res.cookie("token", jwtToken, { expires: expirydate, sameSite: 'none', secure: true });
+        res.cookie("token", jwtToken, { expires: expirydate, sameSite: 'none', secure: false });
         res.status(200).json({ user: user._id });
     } catch(error) {
         const errors = handleErrors(error);
