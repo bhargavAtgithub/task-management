@@ -20,7 +20,7 @@ app.listen(PORT, () => {
 app.use(json());
 app.use(cookieParser());
 
-const whitelist = ["http://localhost:3000"]
+const whitelist = ["http://localhost:3000", "next-task-management-phi.vercel.app"]
 const corsOptions = {
   origin:  (origin, callback) => {
     if (!origin || whitelist.indexOf(origin) !== -1) {
