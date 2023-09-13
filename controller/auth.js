@@ -48,6 +48,10 @@ const SignUp = asyncHandler(async (req, res) => {
         message= ERRORS.INVALID_EMAIL.message;
     } else if(!validator.isStrongPassword(password, {
         minLength: 6,
+        minLowercase: 0, 
+        minUppercase: 0, 
+        minNumbers: 0, 
+        minSymbols: 0,
     })){
         message= ERRORS.INVALID_PASSWORD.message;
     }
