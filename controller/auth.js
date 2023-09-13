@@ -71,8 +71,10 @@ const SignUp = asyncHandler(async (req, res) => {
         });
 
         const jwtToken = utils.generateToken(user);
-        res.cookie("token", jwtToken);
-        res.status(200).json(user);
+        const expirydate = new Date();
+        expirydate.setDate(expirydate.getDate() + 2);
+        res.cookie("token", jwtToken, { expires: expirydate });
+        res.status(200).json({ user: user });
     } catch (error) {
         const errors = handleErrors(error);
         res.status(400).json({errors});
@@ -90,9 +92,10 @@ const SignIn = asyncHandler(async (req, res) => {
 
     try {
         const user = await UserModel.login(email, password);
-
         const jwtToken = utils.generateToken(user);
-        res.cookie("token", jwtToken);
+        const expirydate = new Date();
+        expirydate.setDate(expirydate.getDate() + 2);
+        res.cookie("token", jwtToken, { expires: expirydate });
         res.status(200).json({ user: user._id });
     } catch(error) {
         const errors = handleErrors(error);

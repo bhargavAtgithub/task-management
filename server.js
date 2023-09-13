@@ -8,7 +8,7 @@ import ErrorHandler from './middlewares/errors.js';
 import InitialiseTaskRoutes from './routes/tasks.js';
 import InitialiseAuthRoutes from './routes/auth.js';
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 dotenv.config();
 connectDB(3);
@@ -19,8 +19,21 @@ app.listen(PORT, () => {
 })
 app.use(json());
 app.use(cookieParser());
-app.use(cors());
+
+const whitelist = ["http://localhost:3000"]
+const corsOptions = {
+  origin:  (origin, callback) => {
+    if (!origin || whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error("Not allowed by CORS"))
+    }
+  },
+  credentials: true,
+}
+app.use(cors(corsOptions));
 app.use(ErrorHandler);
+
 
 InitialiseTaskRoutes(app);
 InitialiseAuthRoutes(app);

@@ -27,11 +27,9 @@ const createAndUpdateTask = asyncHandler(async (req, res) => {
 
     try {
 
-        if(!task.title){
-            throw Error(ERRORS.MISSING_TASK_TITLE.message)
-        }
-
-        if(task.dueDate){
+        console.log(!!task?.dueDate);
+       
+        if(!!task?.dueDate){
             const isDueDateValid = validator.isAfter(task.dueDate);
             if(!isDueDateValid) throw Error(ERRORS.INVALID_DUE_DATE.message)
         }
@@ -39,14 +37,15 @@ const createAndUpdateTask = asyncHandler(async (req, res) => {
 
         if(params.id){
 
-            const validFields = ["title", "description", "dueDate", "user"];
+            const validFields = ["title", "description", "dueDate", "user", "completed"];
             const filteredObject = {};
 
             Object.keys(task).forEach(key => {
                 if (validFields.includes(key)) {
                   filteredObject[key] = task[key]; 
                 }
-              });
+            });
+            
 
             const updatedTask = await TaskModel.updateOne({
                 "user": user._id,
@@ -64,6 +63,10 @@ const createAndUpdateTask = asyncHandler(async (req, res) => {
             }
 
         } else {
+            if(!task.title){
+                throw Error(ERRORS.MISSING_TASK_TITLE.message)
+            }    
+
             const newTask = await TaskModel.create({
                 title: task.title,
                 description: task.description || "",
