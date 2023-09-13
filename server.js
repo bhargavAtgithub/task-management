@@ -22,8 +22,8 @@ app.use(cookieParser());
 
 // const whitelist = ["http://localhost:3000", "https://next-task-management-phi.vercel.app"]
 const corsOptions = {
-  origin:  'https://next-task-management-phi.vercel.app',
-  credentials: true,
+  "Access-Control-Allow-Credentials": true,
+  "Access-Control-Allow-Origin": "https://next-task-management-phi.vercel.app",
 }
 app.use(cors(corsOptions));
 app.use(ErrorHandler);
