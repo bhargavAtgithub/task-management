@@ -8,7 +8,7 @@ import ErrorHandler from './middlewares/errors.js';
 import InitialiseTaskRoutes from './routes/tasks.js';
 import InitialiseAuthRoutes from './routes/auth.js';
 
-const PORT = 3000;
+const PORT = 3002;
 
 dotenv.config();
 connectDB(3);
@@ -32,6 +32,13 @@ const corsOptions = {
   },
   credentials: true,
 }
+app.use(function(req, res, next) {
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Access-Control-Allow-Origin', req.headers.origin);
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+    next();
+});
 app.use(cors(corsOptions));
 app.use(ErrorHandler);
 
