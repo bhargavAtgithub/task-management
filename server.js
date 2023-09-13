@@ -9,7 +9,7 @@ import InitialiseTaskRoutes from './routes/tasks.js';
 import InitialiseAuthRoutes from './routes/auth.js';
 
 const PORT = process.env.PORT || 3001;
-
+console.log(process.env.MONGODB_URI);
 dotenv.config();
 connectDB(3);
 
