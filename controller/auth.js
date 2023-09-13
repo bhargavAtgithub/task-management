@@ -73,7 +73,14 @@ const SignUp = asyncHandler(async (req, res) => {
         const jwtToken = utils.generateToken(user);
         const expirydate = new Date();
         expirydate.setDate(expirydate.getDate() + 2);
-        res.cookie("token", jwtToken, { expires: expirydate });
+        res.cookie("token", jwtToken, { 
+            expires: expirydate, 
+            domain: 'https://next-task-management-phi.vercel.app',
+            path: '/',
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+        });
         res.status(200).json({ user: user });
     } catch (error) {
         const errors = handleErrors(error);
@@ -95,7 +102,14 @@ const SignIn = asyncHandler(async (req, res) => {
         const jwtToken = utils.generateToken(user);
         const expirydate = new Date();
         expirydate.setDate(expirydate.getDate() + 2);
-        res.cookie("token", jwtToken, { expires: expirydate, domain: '.app.localhost' });
+        res.cookie("token", jwtToken, { 
+            expires: expirydate, 
+            domain: 'https://next-task-management-phi.vercel.app',
+            path: '/',
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+        });
         res.status(200).json({ user: user._id });
     } catch(error) {
         const errors = handleErrors(error);
