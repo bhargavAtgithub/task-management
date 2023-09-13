@@ -8,7 +8,7 @@ import ErrorHandler from './middlewares/errors.js';
 import InitialiseTaskRoutes from './routes/tasks.js';
 import InitialiseAuthRoutes from './routes/auth.js';
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 dotenv.config();
 connectDB(3);
