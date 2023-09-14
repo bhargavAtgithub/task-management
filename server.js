@@ -8,7 +8,7 @@ import ErrorHandler from './middlewares/errors.js';
 import InitialiseTaskRoutes from './routes/tasks.js';
 import InitialiseAuthRoutes from './routes/auth.js';
 
-const PORT = 3000;
+const PORT = 3002;
 
 dotenv.config();
 connectDB(3);
@@ -20,11 +20,17 @@ app.listen(PORT, () => {
 app.use(json());
 app.use(cookieParser());
 
-// const whitelist = ["http://localhost:3000", "https://next-task-management-phi.vercel.app"]
+const whitelist = ["http://localhost:3000", "next-task-management-phi.vercel.app"]
 const corsOptions = {
-  "Access-Control-Allow-Credentials": true,
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "*",
+    credentials: true,
+    origin:  (origin, callback) => {
+      if (!origin || whitelist.indexOf(origin) !== -1) {
+        callback(null, true)
+      } else {
+        callback(new Error("Not allowed by CORS"))
+      }
+    },
+    credentials: true,
 }
 app.use(cors(corsOptions));
 app.use(ErrorHandler);
